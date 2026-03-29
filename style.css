@@ -1,0 +1,325 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Segoe UI', 'Minecraft', 'Courier New', monospace;
+    background: #000;
+    touch-action: none;
+}
+
+/* ========== लोडिंग स्क्रीन ========== */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1b2a 100%);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease;
+}
+
+.loading-content {
+    text-align: center;
+    padding: 20px;
+    animation: fadeInUp 0.6s ease;
+}
+
+.loading-content h1 {
+    font-size: 3.5rem;
+    color: #ffaa00;
+    text-shadow: 0 0 20px #ffaa00, 0 0 40px #ff8800;
+    margin-bottom: 40px;
+    letter-spacing: 4px;
+    animation: pulse 1.5s infinite;
+}
+
+.loading-bar-container {
+    width: 280px;
+    height: 12px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+#loading-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffaa00, #ff6600);
+    border-radius: 20px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px #ffaa00;
+}
+
+#loading-text {
+    color: #fff;
+    font-size: 1rem;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.loading-tip {
+    color: #aaa;
+    font-size: 0.8rem;
+    margin-top: 30px;
+    max-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ========== मोबाइल कंट्रोल्स ========== */
+#mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    pointer-events: none;
+}
+
+.joystick-area {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 140px;
+    height: 140px;
+    pointer-events: auto;
+}
+
+.joystick-base {
+    width: 100%;
+    height: 100%;
+    background: rgba(30,30,40,0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    position: relative;
+}
+
+.joystick-handle {
+    width: 55px;
+    height: 55px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    transition: transform 0.05s linear;
+}
+
+.action-buttons {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+    pointer-events: auto;
+}
+
+.action-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.action-btn:active {
+    transform: scale(0.92);
+    background: rgba(255,100,0,0.8);
+}
+
+.hotbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    pointer-events: auto;
+}
+
+.hotbar-slot {
+    width: 55px;
+    height: 55px;
+    background: rgba(30,30,40,0.8);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    border: 2px solid transparent;
+}
+
+.hotbar-slot.selected {
+    border-color: #ffaa00;
+    background: rgba(255,170,0,0.3);
+    box-shadow: 0 0 10px #ffaa00;
+    transform: scale(1.05);
+}
+
+/* ========== HUD ========== */
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 400;
+}
+
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    color: white;
+    text-shadow: 0 0 5px black;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 450;
+}
+
+#block-info {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+}
+
+#day-night-cycle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 20px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#sun-moon-icon {
+    font-size: 1.5rem;
+}
+
+#time-bar {
+    width: 80px;
+    height: 6px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* ========== NPC डायलॉग ========== */
+#npc-dialog {
+    position: fixed;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255,215,0,0.5);
+    z-index: 600;
+    transition: all 0.3s ease;
+}
+
+#npc-dialog.hidden {
+    display: none;
+}
+
+.dialog-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+#dialog-text {
+    color: #ffdd88;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+#close-dialog {
+    background: rgba(255,0,0,0.6);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ========== एनिमेशन ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        text-shadow: 0 0 20px #ffaa00;
+    }
+    50% {
+        text-shadow: 0 0 35px #ff6600, 0 0 10px #ffaa00;
+    }
+}
+
+/* ========== डेस्कटॉप के लिए ========== */
+@media (min-width: 768px) {
+    .joystick-area, .action-buttons {
+        opacity: 0.6;
+    }
+    #crosshair {
+        font-size: 24px;
+    }
+}
