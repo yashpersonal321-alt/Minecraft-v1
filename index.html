@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BlockCraft - Minecraft Style Next Gen Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- लोडिंग स्क्रीन -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>BlockCraft</h1>
+            <div class="loading-bar-container">
+                <div id="loading-bar"></div>
+            </div>
+            <p id="loading-text">लोड हो रहा है... 0%</p>
+            <p class="loading-tip">💡 टिप: ब्लॉक रखने के लिए स्क्रीन टैप करें, तोड़ने के लिए होल्ड करें</p>
+        </div>
+    </div>
+
+    <!-- मोबाइल कंट्रोल्स -->
+    <div id="mobile-controls">
+        <div class="joystick-area" id="joystick-area">
+            <div class="joystick-base" id="joystick-base">
+                <div class="joystick-handle" id="joystick-handle"></div>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button class="action-btn" id="break-btn">🔨 तोड़ें</button>
+            <button class="action-btn" id="place-btn">🧱 रखें</button>
+            <button class="action-btn" id="jump-btn">🦘 कूदें</button>
+        </div>
+        <div class="hotbar" id="hotbar">
+            <div class="hotbar-slot selected" data-slot="0">🌿</div>
+            <div class="hotbar-slot" data-slot="1">🪵</div>
+            <div class="hotbar-slot" data-slot="2">🪨</div>
+            <div class="hotbar-slot" data-slot="3">🧱</div>
+            <div class="hotbar-slot" data-slot="4">💎</div>
+        </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+        <div id="crosshair">+</div>
+        <div id="block-info">
+            <span id="block-name">घास</span>
+            <span id="coords">0, 0, 0</span>
+        </div>
+        <div id="day-night-cycle">
+            <div id="sun-moon-icon">☀️</div>
+            <div id="time-bar"></div>
+        </div>
+    </div>
+
+    <!-- डायलॉग बॉक्स (NPC के लिए) -->
+    <div id="npc-dialog" class="hidden">
+        <div class="dialog-content">
+            <p id="dialog-text">...</p>
+            <button id="close-dialog">✖</button>
+        </div>
+    </div>
+
+    <!-- Three.js लाइब्रेरी -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <!-- गेम मॉड्यूल्स -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
