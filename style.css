@@ -13,106 +13,6 @@ body {
     touch-action: none;
 }
 
-/* ========== लोडिंग स्क्रीन - फिक्स्ड और अपग्रेडेड ========== */
-#loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #0a0f1e 0%, #0a1a2a 50%, #0a0f1e 100%);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.5s ease;
-    backdrop-filter: blur(0px);
-}
-
-.loading-content {
-    text-align: center;
-    padding: 20px;
-    animation: fadeInUp 0.8s ease;
-}
-
-.loading-logo {
-    margin-bottom: 40px;
-    position: relative;
-}
-
-.cube {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background: linear-gradient(135deg, #ffaa00, #ff6600);
-    animation: rotateCube 2s infinite linear;
-    transform-style: preserve-3d;
-    box-shadow: 0 0 30px rgba(255,170,0,0.5);
-}
-
-@keyframes rotateCube {
-    0% { transform: rotateX(0) rotateY(0); }
-    100% { transform: rotateX(360deg) rotateY(360deg); }
-}
-
-.loading-content h1 {
-    font-size: 3rem;
-    background: linear-gradient(45deg, #ffaa00, #ff6600, #ffaa00);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 30px rgba(255,170,0,0.5);
-    letter-spacing: 4px;
-    animation: pulse 1.5s infinite;
-}
-
-.loading-bar-container {
-    width: 300px;
-    height: 8px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 20px auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-#loading-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #ffaa00, #ff6600, #ffaa00);
-    border-radius: 10px;
-    transition: width 0.2s ease;
-    box-shadow: 0 0 15px #ffaa00;
-}
-
-#loading-text {
-    color: #fff;
-    font-size: 1rem;
-    margin-top: 15px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-#loading-detail {
-    color: #ffaa88;
-    font-size: 0.8rem;
-    margin-top: 8px;
-}
-
-.loading-tips {
-    margin-top: 40px;
-}
-
-#tip-text {
-    color: #aaa;
-    font-size: 0.8rem;
-    background: rgba(0,0,0,0.5);
-    padding: 8px 16px;
-    border-radius: 20px;
-    display: inline-block;
-    animation: fadeInOut 3s infinite;
-}
-
 /* ========== मोबाइल कंट्रोल्स ========== */
 #mobile-controls {
     position: fixed;
@@ -475,17 +375,6 @@ body {
 }
 
 /* ========== एनिमेशन ========== */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -495,21 +384,6 @@ body {
         opacity: 1;
         transform: translate(-50%, -50%);
     }
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; text-shadow: 0 0 40px #ffaa00; }
-}
-
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-}
-
-@keyframes rotateCube {
-    0% { transform: rotateX(0) rotateY(0); }
-    100% { transform: rotateX(360deg) rotateY(360deg); }
 }
 
 /* ========== रेस्पॉन्सिव ========== */
