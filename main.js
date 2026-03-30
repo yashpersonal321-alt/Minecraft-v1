@@ -1,106 +1,181 @@
 import * as THREE from 'three';
 import { GameEngine } from './game/core/GameEngine.js';
-import { LoadingScreen } from './game/ui/LoadingScreen.js';
-import { MobileControls } from './game/ui/MobileControls.js';
 
-// ग्लोबल वेरिएबल्स
 let gameEngine = null;
-let loadingScreen = null;
-let mobileControls = null;
-
-// लोडिंग प्रोग्रेस
 let loadingProgress = 0;
+
+// लोडिंग स्टेप्स
 const loadingSteps = [
-    { name: "इंजन इनिशियलाइज़ हो रहा...", progress: 10 },
-    { name: "वर्ल्ड जेनरेट हो रही...", progress: 30 },
-    { name: "टेक्सचर लोड हो रहे...", progress: 50 },
-    { name: "चंक रेंडर हो रहे...", progress: 70 },
-    { name: "NPC स्पॉन हो रहे...", progress: 85 },
-    { name: "एनीमेशन सेटअप...", progress: 95 },
-    { name: "तैयार!", progress: 100 }
+    { text: "🎮 इंजन शुरू हो रहा...", progress: 10, detail: "Initializing Three.js" },
+    { text: "🌍 वर्ल्ड जनरेट हो रही...", progress: 30, detail: "Generating terrain" },
+    { text: "🎨 टेक्सचर लोड हो रहे...", progress: 50, detail: "Loading textures & shaders" },
+    { text: "🏔️ चंक रेंडर हो रहे...", progress: 70, detail: "Building chunks" },
+    { text: "👥 NPC स्पॉन हो रहे...", progress: 85, detail: "Spawning villagers" },
+    { text: "✨ एनीमेशन सेटअप...", progress: 95, detail: "Setting up animations" },
+    { text: "🚀 गेम तैयार!", progress: 100, detail: "Ready to play!" }
 ];
 
 let currentStep = 0;
+let tips = [
+    "💡 Tip: ब्लॉक रखने के लिए स्क्रीन टैप करें",
+    "🎮 जॉयस्टिक से चलें, बटन से एक्शन करें",
+    "🌙 रात में मॉब्स से सावधान रहें",
+    "🔨 ब्लॉक तोड़ने के लिए होल्ड करें",
+    "🎒 इन्वेंटरी खोलने के लिए बैग बटन दबाएं",
+    "⭐ XP से नए आइटम अनलॉक होंगे"
+];
 
-// गेम स्टार्ट करने से पहले लोडिंग सिमुलेट करें
-async function startGame() {
-    loadingScreen = new LoadingScreen();
-    loadingScreen.show();
+function updateLoadingUI(text, progress, detail) {
+    const loadingBar = document.getElementById('loading-bar');
+    const loadingText = document.getElementById('loading-text');
+    const loadingDetail = document.getElementById('loading-detail');
+    const tipText = document.getElementById('tip-text');
     
-    // लोडिंग स्टेप्स को एनिमेट करें
+    if (loadingBar) loadingBar.style.width = `${progress}%`;
+    if (loadingText) loadingText.innerText = text;
+    if (loadingDetail) loadingDetail.innerText = detail;
+    
+    // टिप्स बदलें
+    if (tipText && Math.random() < 0.1) {
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        tipText.innerText = randomTip;
+    }
+}
+
+async function simulateLoading() {
     for (let i = 0; i < loadingSteps.length; i++) {
         const step = loadingSteps[i];
-        loadingScreen.updateText(step.name);
-        loadingScreen.updateProgress(step.progress);
+        updateLoadingUI(step.text, step.progress, step.detail);
         
-        // हर स्टेप के बीच थोड़ा इंतज़ार (रियलिस्टिक लगे)
-        await sleep(300);
+        // रियलिस्टिक लोडिंग डिले
+        await new Promise(resolve => setTimeout(resolve, 200));
         
-        // थोड़ा स्मूथ प्रोग्रेस
+        // स्मूथ प्रोग्रेस
         if (i < loadingSteps.length - 1) {
-            for (let p = step.progress + 5; p < loadingSteps[i+1].progress; p += 5) {
-                loadingScreen.updateProgress(p);
-                await sleep(20);
+            const nextProgress = loadingSteps[i+1].progress;
+            for (let p = step.progress + 5; p < nextProgress; p += 5) {
+                updateLoadingUI(step.text, p, step.detail);
+                await new Promise(resolve => setTimeout(resolve, 15));
             }
         }
     }
-    
-    // लोडिंग पूरी - अब गेम शुरू
-    loadingScreen.hide();
-    
-    // गेम इंजन बनाएं
-    const canvas = document.createElement('canvas');
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    document.body.appendChild(canvas);
-    
-    gameEngine = new GameEngine(canvas);
-    
-    // मोबाइल कंट्रोल्स सेटअप करें
-    mobileControls = new MobileControls(gameEngine);
-    mobileControls.init();
-    
-    // गेम लूप शुरू करें
-    gameEngine.start();
-    
-    // NPC डायलॉग के लिए इवेंट लिस्टनर
-    setupNPCEvents();
-    
-    console.log("✨ गेम पूरी तरह से शुरू हो चुका है! ✨");
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+async function startGame() {
+    try {
+        // लोडिंग सिमुलेट
+        await simulateLoading();
+        
+        // गेम इंजन बनाएं
+        const canvas = document.createElement('canvas');
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '1';
+        document.body.appendChild(canvas);
+        
+        gameEngine = new GameEngine(canvas);
+        await gameEngine.init();
+        gameEngine.start();
+        
+        // लोडिंग स्क्रीन हाइड करें
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+        
+        // बैकग्राउंड म्यूजिक शुरू करें
+        const bgMusic = document.getElementById('bg-music');
+        if (bgMusic) {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(e => console.log('Audio autoplay blocked'));
+        }
+        
+        console.log('✨ Game Started Successfully! ✨');
+        
+    } catch (error) {
+        console.error('Game failed to start:', error);
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) {
+            loadingText.innerText = '❌ Error loading game. Please refresh.';
+            loadingText.style.color = '#ff5555';
+        }
+    }
 }
 
-function setupNPCEvents() {
-    document.getElementById('close-dialog')?.addEventListener('click', () => {
-        document.getElementById('npc-dialog')?.classList.add('hidden');
-    });
+// पॉज़ मेनू इवेंट्स
+function setupPauseMenu() {
+    const pauseBtn = document.getElementById('inventory-btn');
+    const pauseMenu = document.getElementById('pause-menu');
+    const resumeBtn = document.getElementById('resume-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+    const quitBtn = document.getElementById('quit-btn');
+    const settingsMenu = document.getElementById('settings-menu');
+    const closeSettings = document.getElementById('close-settings');
+    const sensitivitySlider = document.getElementById('sensitivity');
+    
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => {
+            if (gameEngine) gameEngine.isPaused = true;
+            if (pauseMenu) pauseMenu.classList.remove('hidden');
+        });
+    }
+    
+    if (resumeBtn) {
+        resumeBtn.addEventListener('click', () => {
+            if (gameEngine) gameEngine.isPaused = false;
+            if (pauseMenu) pauseMenu.classList.add('hidden');
+        });
+    }
+    
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            if (pauseMenu) pauseMenu.classList.add('hidden');
+            if (settingsMenu) settingsMenu.classList.remove('hidden');
+        });
+    }
+    
+    if (closeSettings) {
+        closeSettings.addEventListener('click', () => {
+            if (settingsMenu) settingsMenu.classList.add('hidden');
+            if (pauseMenu) pauseMenu.classList.remove('hidden');
+        });
+    }
+    
+    if (quitBtn) {
+        quitBtn.addEventListener('click', () => {
+            if (confirm('क्या आप सच में बाहर निकलना चाहते हैं?')) {
+                location.reload();
+            }
+        });
+    }
+    
+    if (sensitivitySlider) {
+        sensitivitySlider.addEventListener('input', (e) => {
+            if (gameEngine && gameEngine.player) {
+                gameEngine.player.mouseSensitivity = e.target.value / 1000;
+            }
+        });
+    }
 }
 
-// मोबाइल पर टच से क्रॉसहेयर छुपाने/दिखाने की जरूरत नहीं, बस शुरू करें
+// विंडो लोड होने पर गेम शुरू करें
 window.addEventListener('load', () => {
     startGame();
+    setupPauseMenu();
 });
 
-// विंडो रीसाइज़ पर कैमरा अपडेट
 window.addEventListener('resize', () => {
     if (gameEngine && gameEngine.renderer) {
         gameEngine.renderer.setSize(window.innerWidth, window.innerHeight);
-        gameEngine.camera.aspect = window.innerWidth / window.innerHeight;
-        gameEngine.camera.updateProjectionMatrix();
+        if (gameEngine.camera) {
+            gameEngine.camera.aspect = window.innerWidth / window.innerHeight;
+            gameEngine.camera.updateProjectionMatrix();
+        }
     }
 });
-
-// PWA सपोर्ट (मोबाइल पर ऐप जैसा अनुभव)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
