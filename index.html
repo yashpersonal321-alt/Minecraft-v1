@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>BlockCraft - Minecraft Style Next Gen Game</title>
+    <title>BlockCraft Pro - Next Gen Minecraft Style Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- लोडिंग स्क्रीन -->
+    <!-- लोडिंग स्क्रीन - फिक्स्ड -->
     <div id="loading-screen">
         <div class="loading-content">
-            <h1>BlockCraft</h1>
+            <div class="loading-logo">
+                <div class="cube"></div>
+                <h1>BLOCKCRAFT</h1>
+            </div>
             <div class="loading-bar-container">
                 <div id="loading-bar"></div>
             </div>
-            <p id="loading-text">लोड हो रहा है... 0%</p>
-            <p class="loading-tip">💡 टिप: ब्लॉक रखने के लिए स्क्रीन टैप करें, तोड़ने के लिए होल्ड करें</p>
+            <p id="loading-text">Initializing Engine... 0%</p>
+            <div id="loading-detail">🎮 Loading chunks...</div>
+            <div class="loading-tips">
+                <p id="tip-text">💡 Tip: Tap screen to place blocks</p>
+            </div>
         </div>
     </div>
 
@@ -27,41 +33,118 @@
             </div>
         </div>
         <div class="action-buttons">
-            <button class="action-btn" id="break-btn">🔨 तोड़ें</button>
-            <button class="action-btn" id="place-btn">🧱 रखें</button>
-            <button class="action-btn" id="jump-btn">🦘 कूदें</button>
+            <button class="action-btn" id="break-btn">🔨</button>
+            <button class="action-btn" id="place-btn">🧱</button>
+            <button class="action-btn" id="jump-btn">🦘</button>
+            <button class="action-btn" id="inventory-btn">🎒</button>
         </div>
         <div class="hotbar" id="hotbar">
-            <div class="hotbar-slot selected" data-slot="0">🌿</div>
-            <div class="hotbar-slot" data-slot="1">🪵</div>
-            <div class="hotbar-slot" data-slot="2">🪨</div>
-            <div class="hotbar-slot" data-slot="3">🧱</div>
-            <div class="hotbar-slot" data-slot="4">💎</div>
+            <div class="hotbar-slot selected" data-slot="0" data-block="grass">🌿</div>
+            <div class="hotbar-slot" data-slot="1" data-block="wood">🪵</div>
+            <div class="hotbar-slot" data-slot="2" data-block="stone">🪨</div>
+            <div class="hotbar-slot" data-slot="3" data-block="brick">🧱</div>
+            <div class="hotbar-slot" data-slot="4" data-block="diamond">💎</div>
+            <div class="hotbar-slot" data-slot="5" data-block="sand">🏖️</div>
+            <div class="hotbar-slot" data-slot="6" data-block="glass">🔮</div>
+        </div>
+    </div>
+
+    <!-- इन्वेंटरी पैनल -->
+    <div id="inventory-panel" class="hidden">
+        <div class="inventory-header">
+            <h3>🎒 इन्वेंटरी</h3>
+            <button id="close-inventory">✖</button>
+        </div>
+        <div class="inventory-grid" id="inventory-grid"></div>
+        <div class="crafting-section">
+            <h4>🔨 क्राफ्टिंग</h4>
+            <div class="crafting-grid" id="crafting-grid"></div>
         </div>
     </div>
 
     <!-- HUD -->
     <div id="hud">
         <div id="crosshair">+</div>
+        <div id="stats">
+            <div class="stat-bar">
+                <span>❤️</span>
+                <div class="stat-fill" id="health-bar" style="width: 100%"></div>
+            </div>
+            <div class="stat-bar">
+                <span>🍗</span>
+                <div class="stat-fill" id="hunger-bar" style="width: 100%"></div>
+            </div>
+            <div class="stat-bar">
+                <span>⭐</span>
+                <div class="stat-fill" id="xp-bar" style="width: 0%"></div>
+            </div>
+        </div>
         <div id="block-info">
-            <span id="block-name">घास</span>
+            <span id="block-name">🌿 घास</span>
             <span id="coords">0, 0, 0</span>
         </div>
         <div id="day-night-cycle">
             <div id="sun-moon-icon">☀️</div>
             <div id="time-bar"></div>
         </div>
+        <div id="mini-map">
+            <canvas id="mini-map-canvas" width="100" height="100"></canvas>
+        </div>
     </div>
 
-    <!-- डायलॉग बॉक्स (NPC के लिए) -->
+    <!-- NPC डायलॉग -->
     <div id="npc-dialog" class="hidden">
         <div class="dialog-content">
-            <p id="dialog-text">...</p>
+            <div class="npc-avatar" id="npc-avatar">👤</div>
+            <div class="dialog-text-box">
+                <p id="dialog-name">Villager</p>
+                <p id="dialog-text">...</p>
+            </div>
             <button id="close-dialog">✖</button>
         </div>
     </div>
 
-    <!-- Three.js लाइब्रेरी -->
+    <!-- पॉज़ मेनू -->
+    <div id="pause-menu" class="hidden">
+        <div class="pause-content">
+            <h2>⏸️ पॉज़</h2>
+            <button id="resume-btn">▶️ जारी रखें</button>
+            <button id="settings-btn">⚙️ सेटिंग्स</button>
+            <button id="quit-btn">🚪 बाहर निकलें</button>
+        </div>
+    </div>
+
+    <!-- सेटिंग्स मेनू -->
+    <div id="settings-menu" class="hidden">
+        <div class="settings-content">
+            <h2>⚙️ सेटिंग्स</h2>
+            <div class="setting-item">
+                <label>🔊 म्यूजिक वॉल्यूम</label>
+                <input type="range" id="music-volume" min="0" max="100" value="50">
+            </div>
+            <div class="setting-item">
+                <label>🎮 सेंसिटिविटी</label>
+                <input type="range" id="sensitivity" min="1" max="10" value="5">
+            </div>
+            <div class="setting-item">
+                <label>📱 मोबाइल मोड</label>
+                <input type="checkbox" id="mobile-mode" checked>
+            </div>
+            <button id="close-settings">वापस</button>
+        </div>
+    </div>
+
+    <!-- ऑडियो एलिमेंट्स -->
+    <audio id="bg-music" loop>
+        <source src="https://assets.codepen.io/.../music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="place-sound">
+        <source src="https://assets.codepen.io/.../place.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="break-sound">
+        <source src="https://assets.codepen.io/.../break.mp3" type="audio/mpeg">
+    </audio>
+
     <script type="importmap">
         {
             "imports": {
@@ -69,8 +152,6 @@
             }
         }
     </script>
-
-    <!-- गेम मॉड्यूल्स -->
     <script type="module" src="main.js"></script>
 </body>
 </html>
